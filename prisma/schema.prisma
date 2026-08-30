@@ -1,0 +1,85 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  name         String
+  passwordHash String
+  avatar       String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  favorites    Favorite[]
+  reviews      Review[]
+  googleKey    UserGoogleKey?
+}
+
+model CoffeeShop {
+  id             String     @id @default(uuid())
+  googlePlaceId  String     @unique
+  name           String
+  address        String
+  city           String
+  state          String
+  latitude       Float
+  longitude      Float
+  googleRating   Float?
+  userRatingsTotal Int?     @default(0)
+  priceLevel     Int?
+  phoneNumber    String?
+  website        String?
+  photoUrl       String?
+  cachedMetadata String?    // JSON string for raw or extra Google attributes
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  favorites      Favorite[]
+  reviews        Review[]
+
+  @@index([city, state])
+  @@index([googlePlaceId])
+}
+
+model Favorite {
+  id           String     @id @default(uuid())
+  userId       String
+  coffeeShopId String
+  createdAt    DateTime   @default(now())
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coffeeShop   CoffeeShop @relation(fields: [coffeeShopId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, coffeeShopId])
+}
+
+model Review {
+  id            String     @id @default(uuid())
+  userId        String
+  coffeeShopId  String
+  overallRating Int
+  wifiRating    Int        // 1-5 or 0 for unknown
+  outletRating  Int        // 1-5 or 0 for unknown
+  noiseLevel    String     // "Quiet", "Moderate", "Loud", "Unknown"
+  seatingRating Int        // 1-5 or 0 for unknown
+  workFriendly  Boolean    @default(true)
+  comment       String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coffeeShop    CoffeeShop @relation(fields: [coffeeShopId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, coffeeShopId])
+}
+
+model UserGoogleKey {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  encryptedKey String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
