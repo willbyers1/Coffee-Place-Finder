@@ -1,0 +1,6 @@
+{
+  "name": "Coffee Shop Finder",
+  "description": "Discover coffee shops across the United States with filters for Wi-Fi, power outlets, noise levels, seating, community reviews, and BYOK Google Maps support.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
