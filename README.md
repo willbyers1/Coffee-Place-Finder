@@ -67,6 +67,13 @@ npm run dev
 
 ## BYOK & Security Considerations
 
+<div align="center">
+
+**Created by Mert Batu Bülbül**
+💻 Computer Engineering Student (2nd Year Student) 💻
+
+</div>
+
 User-provided API keys are treated as sensitive credentials:
 1. Keys are encrypted server-side using AES-256-GCM prior to database storage.
 2. The server-side decryption key resides exclusively in environment variables (`ENCRYPTION_SECRET`).
